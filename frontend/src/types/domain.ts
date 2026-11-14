@@ -1,6 +1,9 @@
 export type User={id:number;email:string;name:string;role:string};
-export type Study={id:number;name:string;filename:string;description:string;direction:string};
+export type Study={id:number;name:string;filename:string;description:string;direction:string;instrument_id:number|null};
 export type Level={id:number;study_id:number;label:string;flow:number};
-export type Reading={id:number;study_id:number;level_id:number;specimen_ref:string;pressure:number;measurement_note:string};
-export type Run={id:number;study_id:number;name:string;config:any;result:any;status:string;error?:string};
+export type Reading={id:number;study_id:number;level_id:number;specimen_ref:string;pressure:number;measurement_note:string;measured_at:string|null};
+export type CalibrationSegment={effective_from:string;effective_to:string|null;multiplier:number;offset:number;note:string};
+export type Calibration={id:number;instrument_id:number;version:number;status:string;note:string;segments:CalibrationSegment[];diagnostics:any;created_by:string;created_at:string};
+export type Instrument={id:number;name:string;serial:string;description:string;active_calibration:Calibration|null};
+export type Run={id:number;study_id:number;name:string;config:any;result:any;status:string;error?:string;calibration_snapshot:any;calibration_version_id:number|null;recalibration_seq:number;is_current:boolean;diagnostics:any};
 export type Note={id:number;run_id:number;name:string;interpretation:string;next_step:string;proposed_flow:number;result_snapshot:any;status:string;review_note:string};

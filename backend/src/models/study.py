@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped,mapped_column
-from sqlalchemy import String,Text
+from sqlalchemy import ForeignKey,String,Text
 from src.config.database import Base
 class FlowStudy(Base):
  __tablename__='flow_studies'
@@ -8,3 +8,4 @@ class FlowStudy(Base):
  filename:Mapped[str]=mapped_column(String(180))
  description:Mapped[str]=mapped_column(Text,default='')
  direction:Mapped[str]=mapped_column(String(30),default='nondecreasing')
+ instrument_id:Mapped[int|None]=mapped_column(ForeignKey('instruments.id'),nullable=True)

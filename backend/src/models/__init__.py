@@ -1,5 +1,7 @@
 from .user import User
 from .audit import AuditLog
+from .instrument import Instrument
+from .calibration import CalibrationVersion,CalibrationSegment
 from .study import FlowStudy
 from .level import DoseLevel
 from .reading import PressureReading

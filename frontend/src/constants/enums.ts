@@ -1,1 +1,4 @@
-export const ROLES={admin:'滤材研究负责人',analyst:'压差试验员',viewer:'复验观察员'};export const RUN_STATUS={queued:'等待拟合',running:'拟合与留档验证',completed:'已成簿',failed:'失败'};export const NOTE_STATUS={draft:'待审阅',approved:'已批准',rejected:'已退回'};
+export const ROLES={admin:'滤材研究负责人',analyst:'压差试验员',viewer:'复验观察员'};
+export const RUN_STATUS={queued:'等待拟合',running:'拟合与留档验证',completed:'已成簿',failed:'失败',superseded:'旧版校准 / 已取代',stale:'校准已更新 / 待重算'};
+export const NOTE_STATUS={draft:'待审阅',approved:'已批准',rejected:'已退回'};
+export const RUN_STATUS_EXTRA={};

@@ -1,0 +1,14 @@
+-- Instrument-aware, retroactive calibration. Startup still uses SQLAlchemy
+-- metadata create_all; this file documents the structural delta for reviewers.
+-- flow_studies.instrument_id -> instruments(id)     (NULL = legacy raw analysis)
+-- pressure_readings.measured_at timestamptz         (UTC instant per specimen)
+-- instruments(id,name UNIQUE,serial UNIQUE,description,created_at)
+-- calibration_versions(id,instrument_id,version,status,note,supersedes_id,created_by,created_at)
+--   UNIQUE(instrument_id,version); one ACTIVE version per instrument
+-- calibration_segments(id,calibration_version_id,effective_from,effective_to,multiplier,offset,note)
+-- monotone_runs.calibration_snapshot JSON             (frozen document at queue time)
+-- monotone_runs.calibration_version_id -> calibration_versions(id)
+-- monotone_runs.recalibration_seq int DEFAULT 0
+-- monotone_runs.is_current boolean DEFAULT false       (one current result per study)
+-- monotone_runs.diagnostics JSON                       (superseded / calibration_invalid reasons)
+-- No production migration runner is claimed; existing deployments need additive ALTERs.

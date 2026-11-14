@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Mapped,mapped_column
-from sqlalchemy import ForeignKey,String,Float,Text,UniqueConstraint
+from sqlalchemy import ForeignKey,String,Float,Text,UniqueConstraint,DateTime
+from datetime import datetime,timezone
 from src.config.database import Base
 class PressureReading(Base):
  __tablename__='pressure_readings'
@@ -10,3 +11,4 @@ class PressureReading(Base):
  specimen_ref:Mapped[str]=mapped_column(String(80))
  pressure:Mapped[float]=mapped_column(Float)
  measurement_note:Mapped[str]=mapped_column(Text,default='')
+ measured_at:Mapped[datetime|None]=mapped_column(DateTime(timezone=True),nullable=True)

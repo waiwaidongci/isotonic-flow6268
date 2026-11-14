@@ -7,5 +7,11 @@ def export_note(db,id,actor):
  note=db.get(ValidationNote,id)
  if not note:raise HTTPException(404,'说明不存在')
  if note.status!='approved':raise HTTPException(409,'仅批准说明可导出')
- result=note.result_snapshot;target=result['threshold_set'];rows=[[note.name,result['source_study']['name'],result['fingerprint'],k['flow'],k['count'],k['mean_pressure'],k['fitted_pressure'],result['lodo']['mse'],target['target_pressure'],target['kind'],target['lower_flow'],target['upper_flow'],note.proposed_flow,note.interpretation,note.next_step,note.review_note] for k in result['knots']]
- record(db,actor,'note.exported',{'note_id':id});return csv_response(f'flow-validation-{id}.csv',rows,['复验说明','研究','输入指纹','流速mL/min','独立滤片数','均压差kPa','拟合压差kPa','原始读数LODO_MSE','目标压差','逆集合类型','逆集合下限','逆集合上限','计划新流速','人工解释','下一步','审核意见'])
+ result=note.result_snapshot;target=result['threshold_set'];calibration=result.get('calibration') or {}
+ calibration_label=('校准 %s v%s'%(calibration.get('instrument',{}).get('name'),calibration.get('version'))) if calibration.get('mode')=='calibrated' else '未绑定仪器 / 沿用原分析'
+ rows=[]
+ for k in result['knots']:
+  bases=k.get('calibration_bases') or []
+  basis_label='；'.join('沿用原分析' if b.get('mode')=='legacy_raw' else f"{b.get('effective_from','')}→{b.get('effective_to') or '至今'} ×{b.get('multiplier')} +{b.get('offset')}" for b in bases) or '—'
+  rows.append([note.name,result['source_study']['name'],result['fingerprint'],calibration_label,result['calibration'].get('version'),calibration.get('document_fingerprint',''),basis_label,k['flow'],k['count'],k['mean_raw_pressure'],k['mean_pressure'],k['fitted_pressure'],result['lodo']['mse'],target['target_pressure'],target['kind'],target['lower_flow'],target['upper_flow'],note.proposed_flow,note.interpretation,note.next_step,note.review_note])
+ record(db,actor,'note.exported',{'note_id':id});return csv_response(f'flow-validation-{id}.csv',rows,['复验说明','研究','输入指纹','校准依据','校准版本','校准文档指纹','逐档生效时段','流速mL/min','独立滤片数','原始均压差kPa','校正均压差kPa','拟合压差kPa','原始读数LODO_MSE','目标压差','逆集合类型','逆集合下限','逆集合上限','计划新流速','人工解释','下一步','审核意见'])

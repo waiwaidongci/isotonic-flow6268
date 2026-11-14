@@ -6,4 +6,7 @@ class StudyInput(BaseModel):
  filename:str=Field(min_length=2,max_length=180)
  description:str=Field(default='',max_length=3000)
  direction:Literal['nondecreasing']='nondecreasing'
+ instrument_id:int|None=Field(default=None,gt=0)
  levels:list[LevelInput]=Field(min_length=2,max_length=30)
+class StudyBinding(BaseModel):
+ instrument_id:int|None=Field(default=None,gt=0)

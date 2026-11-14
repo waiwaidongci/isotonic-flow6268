@@ -13,6 +13,13 @@ def validate_source(levels,readings):
   counts[reading['level_id']]+=1
  if any(n<1 or n>30 for n in counts.values()):raise ValueError('各档需1..30条独立读数')
 
+def validate_measurement_times(readings):
+ # Measurement instants are optional so legacy imports keep their raw analysis,
+ # but a partial import is ambiguous for calibration and is rejected.
+ moments=[r.get('measured_at') for r in readings]
+ stamped=[m for m in moments if m is not None]
+ if stamped and len(stamped)!=len(moments):raise ValueError('测量时刻须整项研究齐全或全部留空，不能只标部分滤片')
+
 def validate_config(config):
  if config.get('direction')!='nondecreasing':raise ValueError('方向须预先声明为nondecreasing')
  t=config['target_pressure'];q=config['query_flows']
